@@ -14,6 +14,13 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Start Minikube') {
+            steps {
+                script {
+                    sh 'minikube start --driver=docker'
+                }
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
