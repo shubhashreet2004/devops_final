@@ -4,8 +4,8 @@ pipeline {
     environment {
         IMAGE_NAME = "shubhashree1311/my-login-page"
         IMAGE_TAG = "latest"
-        DOCKER_USER = "shubhashree1311"
-        DOCKER_PASS = "shubha@2004"
+        DOCKER_USER = "shubhashree1311"  // Hardcoded Docker username
+        DOCKER_PASS = "shubha@2004"      // Hardcoded Docker password
     }
 
     stages {
@@ -14,10 +14,22 @@ pipeline {
                 checkout scm
             }
         }
+
         stage('Start Minikube') {
             steps {
                 script {
                     sh 'minikube start --driver=docker'
+                }
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                script {
+                    // Hardcoded Docker login
+                    sh """
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    """
                 }
             }
         }
@@ -34,7 +46,6 @@ pipeline {
             steps {
                 script {
                     sh """
-                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                     docker push $IMAGE_NAME:$IMAGE_TAG
                     docker logout
                     """
