@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "shubhashree1311/my-login-page"
         IMAGE_TAG = "latest"
-        DOCKER_USER = "shubhashreet2004"
+        DOCKER_USER = "shubhashree1311"
         DOCKER_PASS = "shubha@2004"
     }
 
