@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: login-page-container
-        image: shubhashreet2004/my-login-page:latest
+        image: shubhashree1311/my-login-page:latest
         ports:
         - containerPort: 80
 ---
