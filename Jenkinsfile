@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "shubhashreet2004/my-login-page"
+        IMAGE_NAME = "shubhashree1311/my-login-page"
         IMAGE_TAG = "latest"
         DOCKER_USER = "shubhashreet2004"
         DOCKER_PASS = "shubha@2004"
