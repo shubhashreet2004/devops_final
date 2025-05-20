@@ -1,74 +1,250 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="bootstrpConf">
 <head>
   <meta charset="UTF-8">
-  <title>Login Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bootstrap Conference</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f2f5;
+    html { font-size: 14px; }
+    .animated { animation-duration: 500ms; }
+    .btn { border-radius: 2px; }
+    .btn-danger { border-color: #D90429; background-color: #EF233C; }
+    .btn-primary { border-color: #2B2D42; background-color: #2B2D42; }
+    .btn-default:hover { background-color: #fafafa; }
+
+    .top-hero {
+      background-color: #fafafa;
+      background-image: linear-gradient(rgba(43,45,66,0.75), rgba(43,45,66,0.75)), url("https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf?dpr=1&auto=compress,format&fit=crop&w=1199&h=799&q=80&cs=tinysrgb&crop=&bg=");
+      background-size: cover;
+      background-position: bottom;
+      background-attachment: fixed;
+      height: 100vh;
+      padding-top: 125px;
       display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .top-hero h1 {
+      color: #D90429;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, .5);
+      font-weight: bold;
+      text-transform: uppercase;
+      width: 50%;
+      letter-spacing: -1px;
+      line-height: .9;
+    }
+    .top-hero p { color: #EDF2F4; }
+
+    .top-nav {
+      z-index: 100;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(0,0,0,0.2);
+    }
+    .top-nav.sticky { position: fixed; }
+    .top-nav ul { float: right; }
+    .top-nav a {
+      font-size: 1.1rem;
+      color: #EDF2F4;
+      text-decoration: none;
+      border-bottom: 3px solid transparent;
+      padding: 0 0 5px;
+      transition: .25s;
+    }
+    .top-nav a:hover {
+      color: #EF233C;
+      border-color: #EF233C;
+    }
+    .signup-btn, .signup-btn:hover {
+      color: #EDF2F4!important;
+      border-bottom: 1px solid #D90429!important;
+      border-color: #D90429!important;
+    }
+
+    .banner {
+      color: #EDF2F4;
+      background-position: center;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
-    }
-    .login-container {
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 300px;
       text-align: center;
     }
-    h2 {
-      margin-bottom: 20px;
-      color: #333;
+    .speakers {
+      background-color: #D90429;
+      background-image: linear-gradient(rgba(217,4,41,0.45), rgba(217,4,41,0.45)), url("https://images.unsplash.com/photo-1485182708500-e8f1f318ba72?dpr=1&auto=compress,format&fit=crop&w=1199&h=764&q=80&cs=tinysrgb&crop=&bg=");
     }
-    input[type="text"],
-    input[type="password"] {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+    .learn {
+      background-color: #2B2D42;
+      background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1493020258366-be3ead1b3027?dpr=1&auto=compress,format&fit=crop&w=1199&h=1199&q=80&cs=tinysrgb&crop=&bg=");
     }
-    button {
-      width: 95%;
-      padding: 10px;
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
+    .signup {
+      background-color: #D90429;
+      background-image: linear-gradient(rgba(217,4,41,0.45), rgba(217,4,41,0.45)), url("https://images.unsplash.com/photo-1487537708572-3c850b5e856e?dpr=1&auto=compress,format&fit=crop&w=1199&h=798&q=80&cs=tinysrgb&crop=&bg=");
     }
-    button:hover {
-      background-color: #45a049;
+
+    footer {
+      text-align: center;
+      background-color: #2B2D42;
+      color: #EDF2F4;
+      padding: 10px 0;
     }
-    .signup-link {
-      margin-top: 15px;
-      font-size: 14px;
-    }
-    .signup-link a {
-      color: #4CAF50;
-      text-decoration: none;
+
+    #speakers_modal .list-group-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
   </style>
 </head>
 <body>
 
-<div class="login-container">
-  <h2>Login</h2>
-  <form action="/login" method="POST">
-    <input type="text" name="username" placeholder="Username" required><br>
-    <input type="password" name="password" placeholder="Password" required><br>
-    <button type="submit">Login</button>
-  </form>
-  <div class="signup-link">
-    Don't have an account? <a href="/signup">Sign up</a>
+  <!-- Modals -->
+  <div id="signup_form_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Sign Up Today!</h4>
+        </div>
+        <div class="modal-body">
+          <form id="signup_form">
+            <fieldset class="form-group">
+              <label>First Name:</label>
+              <input class="form-control" placeholder="First Name">
+            </fieldset>
+            <fieldset class="form-group">
+              <label>Last Name:</label>
+              <input class="form-control" placeholder="Last Name">
+            </fieldset>
+            <fieldset class="form-group">
+              <label>Email:</label>
+              <input class="form-control" placeholder="Email">
+              <small>Your email will be used as your username.</small>
+            </fieldset>
+            <fieldset class="form-group">
+              <label>You're:</label>
+              <select class="form-control">
+                <option>---</option>
+                <option>Javascript Developer</option>
+                <option>Ruby Developer</option>
+                <option>Python Developer</option>
+                <option>Web Designer</option>
+              </select>
+            </fieldset>
+            <fieldset class="form-group">
+              <label><input type="radio" name="age" value="under21"> I am &lt;21</label>
+              <label><input type="radio" name="age" value="over21" checked> I am &gt;21</label>
+            </fieldset>
+            <button class="btn btn-danger" type="submit">Sign Up</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
+  <div id="speakers_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Speakers</h4>
+        </div>
+        <div class="modal-body">
+          <ul class="list-group">
+            <li class="list-group-item">Jason Node <a href="#" class="btn btn-sm btn-danger">Details</a></li>
+            <li class="list-group-item">Alice Sass <a href="#" class="btn btn-sm btn-danger">Details</a></li>
+            <li class="list-group-item">Carl Ruby <a href="#" class="btn btn-sm btn-danger">Details</a></li>
+            <li class="list-group-item">Frank Script <a href="#" class="btn btn-sm btn-danger">Details</a></li>
+            <li class="list-group-item">Sophie Perl <a href="#" class="btn btn-sm btn-danger">Details</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <div class="container">
+      <ul class="list-inline pull-right">
+        <li><a href="#" class="js-scroll" data-scroll-to="#home">Home</a></li>
+        <li><a href="#" class="js-scroll" data-scroll-to="#speakers">Speakers</a></li>
+        <li><a href="#" class="js-scroll" data-scroll-to="#locations">Locations</a></li>
+        <li><a href="#" class="js-scroll" data-scroll-to="#topics">Topics</a></li>
+        <li><a href="#" class="btn signup-btn btn-danger btn-sm" data-toggle="modal" data-target="#signup_form_modal">Buy Tickets</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header id="home" class="top-hero">
+    <h1>Bootstrap Conference</h1>
+    <p class="lead">July 30th - August 15th</p>
+    <p class="lead">Everything you need to know about Bootstrap.</p>
+    <button class="btn btn-lg btn-danger" data-toggle="modal" data-target="#signup_form_modal">Buy Tickets</button>
+    <button class="js-scroll btn btn-lg btn-default" data-scroll-to="#speakers">Learn More</button>
+  </header>
+
+  <!-- Sections -->
+  <section id="speakers" class="banner speakers">
+    <h2>Meet With Experts</h2>
+    <a href="#" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#speakers_modal">Our Speakers</a>
+  </section>
+
+  <section id="topics" class="banner learn">
+    <h2>Learn Industry Practices</h2>
+    <a href="#" class="btn btn-danger btn-lg">Topics</a>
+  </section>
+
+  <section id="locations" class="banner signup">
+    <h2>Don't Miss Out</h2>
+    <a href="#" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#signup_form_modal">Buy Tickets</a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; <span id="copyright-year"></span> Bootstrap Conference, All Rights Reserved</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script>
+    function stickyNav() {
+      const topNav = document.querySelector('.top-nav'),
+            offsetPoint = document.querySelector('.top-hero').offsetHeight;
+      window.addEventListener('scroll', function () {
+        if (window.pageYOffset >= offsetPoint) {
+          topNav.classList.add('sticky');
+        } else {
+          topNav.classList.remove('sticky');
+        }
+      });
+    }
+
+    function setCopyrightYear(selector) {
+      var d = new Date();
+      selector.text(d.getFullYear());
+    }
+
+    $('.js-scroll').on('click', function(event) {
+      event.preventDefault();
+      var target = $(this).data('scrollTo');
+      $('html, body').animate({
+        scrollTop: $(target).offset().top
+      }, 400);
+    });
+
+    $(document).ready(function() {
+      setCopyrightYear($('#copyright-year'));
+      stickyNav();
+    });
+  </script>
 </body>
 </html>
